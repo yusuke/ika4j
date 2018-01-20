@@ -18,9 +18,15 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 class IKAAccessor {
+    private final CookieManager cookieManager = new CookieManager();
+    private final ForceHostnameVerificationSSLContext ctx = new ForceHostnameVerificationSSLContext("app.splatoon2.nintendo.net", 443);
+    private final HttpClient client = HttpClient
+            .newBuilder()
+            .sslContext(ctx).sslParameters(ctx.getParametersForSNI())
+            .cookieManager(cookieManager)
+            .build();
 
-    static String getSchedule(String iksmSession) {
-        CookieManager cookieManager = new CookieManager();
+    IKAAccessor(String iksmSession) {
         HttpCookie cookie = new HttpCookie("iksm_session", iksmSession);
         cookie.setDomain("app.splatoon2.nintendo.net");
         cookie.setPath("/");
@@ -32,17 +38,13 @@ class IKAAccessor {
         } catch (URISyntaxException e) {
             throw new IllegalStateException(e);
         }
+    }
 
-        ForceHostnameVerificationSSLContext ctx = new ForceHostnameVerificationSSLContext("app.splatoon2.nintendo.net", 443);
+    private final HttpRequest request = HttpRequest.newBuilder(URI.create("https://app.splatoon2.nintendo.net/api/schedules"))
+            .GET()
+            .build();
 
-        final HttpClient client = HttpClient
-                .newBuilder()
-                .sslContext(ctx).sslParameters(ctx.getParametersForSNI())
-                .cookieManager(cookieManager)
-                .build();
-        final HttpRequest request = HttpRequest.newBuilder(URI.create("https://app.splatoon2.nintendo.net/api/schedules"))
-                .GET()
-                .build();
+    String getSchedule() {
         try {
             HttpResponse<String> httpResponse = client.send(request,
                     HttpResponse.BodyHandler.asString(StandardCharsets.UTF_8));
@@ -50,5 +52,5 @@ class IKAAccessor {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        }
+    }
 }

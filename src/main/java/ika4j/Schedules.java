@@ -23,11 +23,6 @@ public class Schedules {
     private List<マッチ> リーグマッチlist = new ArrayList<>();
     private List<マッチ> レギュラーマッチlist = new ArrayList<>();
 
-    public Schedules(String iksmSession){
-        String scheduleJSON = IKAAccessor.getSchedule(iksmSession);
-        this.init(scheduleJSON);
-
-    }
     public static Schedules fromRawJSON(String rawJSON){
         Schedules schedules = new Schedules();
         schedules.init(rawJSON);
