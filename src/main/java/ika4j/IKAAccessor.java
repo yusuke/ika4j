@@ -47,20 +47,8 @@ class IKAAccessor {
             HttpResponse<String> httpResponse = client.send(request,
                     HttpResponse.BodyHandler.asString(StandardCharsets.UTF_8));
             return httpResponse.body();
-//            httpResponse
-//                    .thenApply(HttpResponse::body)
-//                    .thenApply(s -> String.format("[%s] - %s", Thread.currentThread().getName(), s))
-//                    .thenAccept(System.out::println)
-//                    .join();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-//        client.sendAsync(request,
-//                HttpResponse.BodyHandler.asString(StandardCharsets.UTF_8))
-//                .thenApply(HttpResponse::body)
-//                .thenApply(s -> String.format("[%s] - %s", Thread.currentThread().getName(), s))
-//                .thenAccept(System.out::println)
-//                .join();
-    }
+        }
 }
