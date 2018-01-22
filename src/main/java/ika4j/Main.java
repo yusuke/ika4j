@@ -11,8 +11,21 @@ package ika4j;
 
 public class Main {
     public static void main(String[] args) {
-        Schedules schedules = new Schedules(args[0]);
-        System.out.println(schedules.get現在のガチマッチ().getルール名());
-        System.out.println(schedules.get次のガチマッチ().getルール名());
+        String iksm_session = "………";
+        // https://app.splatoon2.nintendo.net/api/schedules の情報を取得
+        ika4j.Schedules schedules = new Ika4J(iksm_session).getSchedules();
+        Battle 現在のガチマッチ = schedules.getCurrentRankedBattle();
+        System.out.println(現在のガチマッチ.getRule().getName());
+        System.out.println(現在のガチマッチ.getStageA().getName());
+        System.out.println(現在のガチマッチ.getStageB().getName());
+        Battle 現在のリーグマッチ = schedules.getCurrentLeagueBattle();
+        System.out.println(現在のリーグマッチ.getRule().getName());
+        System.out.println(現在のリーグマッチ.getStageA().getName());
+        System.out.println(現在のリーグマッチ.getStageB().getName());
+
+        for (Battle Battle : schedules.getRankedBattles()) {
+            System.out.println(Battle.getRule().getName());
+            System.out.println(Battle.getStartTime());
+        }
     }
 }

@@ -13,7 +13,6 @@ import org.json.JSONException
 import org.json.JSONObject
 
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.ArrayList
 import java.util.NoSuchElementException
@@ -46,33 +45,22 @@ class Schedules private constructor(
             val json = JSONObject(rawJson)
             val gachiArray = json.getJSONArray("gachi")
             for (i in 0 until gachiArray.length()) {
-                rankedBattles.add(createBattle(gachiArray.getJSONObject(i)))
+                rankedBattles.add(Battle(gachiArray.getJSONObject(i)))
             }
 
             val leagueArray = json.getJSONArray("league")
             for (i in 0 until leagueArray.length()) {
-                leagueBattles.add(createBattle(leagueArray.getJSONObject(i)))
+                leagueBattles.add(Battle(leagueArray.getJSONObject(i)))
             }
 
             val regularArray = json.getJSONArray("regular")
             for (i in 0 until regularArray.length()) {
-                regularBattles.add(createBattle(regularArray.getJSONObject(i)))
+                regularBattles.add(Battle(regularArray.getJSONObject(i)))
             }
         } catch (e: JSONException) {
             throw IllegalStateException(e)
         }
     }
-
-    private fun createBattle(battle: JSONObject): Battle {
-        val rule = battle.getJSONObject("rule")
-        return Battle(
-                rule = Rule(rule.getString("key"), rule.getString("multiline_name"), rule.getString("name")),
-                startTime = LocalDateTime.ofEpochSecond(battle.getLong("start_time"), 0, ZoneOffset.of("+9")),
-                endTime = LocalDateTime.ofEpochSecond(battle.getLong("end_time"), 0, ZoneOffset.of("+9")),
-                stageA = battle.getJSONObject("stage_a").getString("name"),
-                stageB = battle.getJSONObject("stage_b").getString("name"))
-    }
-
 
     private fun pick(battles: List<Battle>, dateTime: LocalDateTime): Battle {
         for (battle in battles) {

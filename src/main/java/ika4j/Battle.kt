@@ -9,13 +9,22 @@
  */
 package ika4j
 
+import org.json.JSONObject
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class Battle(val rule: Rule,
-                  val stageA: String,
-                  val stageB: String,
+                  val stageA: Stage,
+                  val stageB: Stage,
                   val startTime: LocalDateTime,
                   val endTime: LocalDateTime) {
+    constructor(battle: JSONObject) : this(
+            rule = Rule(battle.getJSONObject("rule").getString("key"), battle.getJSONObject("rule").getString("multiline_name"), battle.getJSONObject("rule").getString("name")),
+            startTime = LocalDateTime.ofEpochSecond(battle.getLong("start_time"), 0, ZoneOffset.of("+9")),
+            endTime = LocalDateTime.ofEpochSecond(battle.getLong("end_time"), 0, ZoneOffset.of("+9")),
+            stageA = Stage(battle.getJSONObject("stage_a")),
+            stageB = Stage(battle.getJSONObject("stage_b")))
+
     internal fun isLiveAt(dateTime: LocalDateTime): Boolean {
         return dateTime.isAfter(startTime) && dateTime.isBefore(endTime)
     }
