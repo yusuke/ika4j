@@ -7,18 +7,16 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ika4j;
+package ika4j
 
-@SuppressWarnings("WeakerAccess")
-public class Ika4J {
-    private final IKAAccessor ikaAccessor;
+import java.time.LocalDateTime
 
-    public Ika4J(String iksmSession) {
-        ikaAccessor = new IKAAccessor(iksmSession);
-    }
-
-    public Schedules getSchedules() {
-        String scheduleJSON = ikaAccessor.getScheduleJSON();
-        return Schedules.fromRawJSON(scheduleJSON);
+data class Match(val rule: String,
+                 val stageA: String,
+                 val stageB: String,
+                 val startTime: LocalDateTime,
+                 val endTime: LocalDateTime) {
+    internal fun isLiveAt(dateTime: LocalDateTime): Boolean {
+        return dateTime.isAfter(startTime) && dateTime.isBefore(endTime)
     }
 }

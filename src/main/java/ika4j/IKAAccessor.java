@@ -44,7 +44,7 @@ class IKAAccessor {
             .GET()
             .build();
 
-    String getSchedule() {
+    String getScheduleJSON() {
         try {
             HttpResponse<String> httpResponse = client.send(request,
                     HttpResponse.BodyHandler.asString(StandardCharsets.UTF_8));
