@@ -14,119 +14,103 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings("WeakerAccess")
 public class Schedules {
-    private List<マッチ> ガチマッチlist = new ArrayList<>();
-    private List<マッチ> リーグマッチlist = new ArrayList<>();
-    private List<マッチ> レギュラーマッチlist = new ArrayList<>();
+    private final List<Match> rankedBattles = new ArrayList<>();
+    private final List<Match> leagueBattles = new ArrayList<>();
+    private final List<Match> regularBattles = new ArrayList<>();
 
-    public static Schedules fromRawJSON(String rawJSON){
+    static Schedules fromRawJSON(String rawJSON) {
         Schedules schedules = new Schedules();
         schedules.init(rawJSON);
         return schedules;
     }
 
-    private Schedules(){}
+    private Schedules() {
+    }
 
-    private void init(String rawJson)  {
+    private void init(String rawJson) {
         try {
             JSONObject json = new JSONObject(rawJson);
             JSONArray gachiArray = json.getJSONArray("gachi");
             for (int i = 0; i < gachiArray.length(); i++) {
-                ガチマッチlist.add(new マッチ(gachiArray.getJSONObject(i)));
+                rankedBattles.add(new Match(gachiArray.getJSONObject(i)));
             }
 
             JSONArray leagueArray = json.getJSONArray("league");
             for (int i = 0; i < leagueArray.length(); i++) {
-                リーグマッチlist.add(new マッチ(leagueArray.getJSONObject(i)));
+                leagueBattles.add(new Match(leagueArray.getJSONObject(i)));
             }
 
             JSONArray regularArray = json.getJSONArray("regular");
             for (int i = 0; i < regularArray.length(); i++) {
-                レギュラーマッチlist.add(new マッチ(regularArray.getJSONObject(i)));
+                regularBattles.add(new Match(regularArray.getJSONObject(i)));
             }
-        }catch(JSONException e){
+        } catch (JSONException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private マッチ pick(List<マッチ> maches, LocalDateTime 日付時刻) {
-        for (マッチ match : maches) {
-            if (match.is開催期間(日付時刻)) {
+    private Match pick(List<Match> maches, LocalDateTime dateTime) {
+        for (Match match : maches) {
+            if (match.isLiveAt(dateTime)) {
                 return match;
             }
         }
-        throw new IllegalStateException("指定時刻のマッチがない");
+        throw new NoSuchElementException("No match found at " + dateTime);
     }
 
-    private マッチ pickCurrent(List<マッチ> maches) {
-        for (マッチ match : maches) {
-            if (match.isCurrent()) {
-                return match;
-            }
-        }
-        throw new IllegalStateException("現在のマッチがない");
+    public List<Match> getRankedBattles() {
+        return rankedBattles;
     }
 
-    private マッチ pickNext(List<マッチ> maches) {
-        for (マッチ match : maches) {
-            if (match.isNext()) {
-                return match;
-            }
-        }
-        throw new IllegalStateException("ツギのマッチがない");
+    public List<Match> getLeagueBattles() {
+        return leagueBattles;
     }
 
-    public List<マッチ> getガチマッチList() {
-        return ガチマッチlist;
+    public List<Match> getRegularBattles() {
+        return regularBattles;
     }
 
-    public List<マッチ> getリーグマッチList() {
-        return リーグマッチlist;
+    public Match getRankedBattleAt(LocalDateTime dateTime) {
+        return pick(rankedBattles, dateTime);
     }
 
-    public List<マッチ> getレギュラーマッチList() {
-        return レギュラーマッチlist;
+    public Match getLeagueBattleAt(LocalDateTime dateTime) {
+        return pick(leagueBattles, dateTime);
     }
 
-    public マッチ getガチマッチ(LocalDateTime 指定日時) {
-        return pick(ガチマッチlist, 指定日時);
+    public Match getRegularBattleAt(LocalDateTime dateTime) {
+        return pick(regularBattles, dateTime);
     }
 
-    public マッチ getリーグマッチ(LocalDateTime 指定日時) {
-        return pick(リーグマッチlist, 指定日時);
+    public Match getCurrentRankedBattle() {
+        return pick(rankedBattles, LocalDateTime.now());
     }
 
-    public マッチ getレギュラーマッチ(LocalDateTime 指定日時) {
-        return pick(レギュラーマッチlist, 指定日時);
+    public Match getCurrentLeagueBattle() {
+        return pick(leagueBattles, LocalDateTime.now());
     }
 
-
-    public マッチ get現在のガチマッチ() {
-        return pickCurrent(ガチマッチlist);
+    public Match getCurrentRegularBattle() {
+        return pick(regularBattles, LocalDateTime.now());
     }
 
-    public マッチ get現在のリーグマッチ() {
-        return pickCurrent(リーグマッチlist);
+    public Match getNextRankedBattle() {
+        return pick(rankedBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS));
     }
 
-    public マッチ get現在のレギュラーマッチ() {
-        return pickCurrent(レギュラーマッチlist);
+    public Match getNextLeagueBattle() {
+        return pick(leagueBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS));
     }
 
-    public マッチ get次のガチマッチ() {
-        return pickNext(ガチマッチlist);
-    }
-
-    public マッチ get次のリーグマッチ() {
-        return pickNext(ガチマッチlist);
-    }
-
-    public マッチ get次のレギュラーマッチ() {
-        return pickNext(ガチマッチlist);
+    public Match getNextRegularBattle() {
+        return pick(regularBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS));
     }
 
 }

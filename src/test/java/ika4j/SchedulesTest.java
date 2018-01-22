@@ -29,17 +29,17 @@ class SchedulesTest {
         Schedules schedules = Schedules.fromRawJSON(schedulesJSON);
         LocalDateTime 日時 = LocalDateTime.of(2018, 1, 20, 10, 30);
         assertAll(
-                () -> assertEquals("ガチエリア", schedules.getガチマッチ(日時).getルール名()),
-                () -> assertEquals("ガンガゼ野外音楽堂", schedules.getガチマッチ(日時).getステージA()),
-                () -> assertEquals("エンガワ河川敷", schedules.getガチマッチ(日時).getステージB()),
+                () -> assertEquals("ガチエリア", schedules.getRankedBattleAt(日時).getRule()),
+                () -> assertEquals("ガンガゼ野外音楽堂", schedules.getRankedBattleAt(日時).getStageA()),
+                () -> assertEquals("エンガワ河川敷", schedules.getRankedBattleAt(日時).getStageB()),
 
-                () -> assertEquals("ガチアサリ", schedules.getリーグマッチ(日時).getルール名()),
-                () -> assertEquals("マンタマリア号", schedules.getリーグマッチ(日時).getステージA()),
-                () -> assertEquals("デボン海洋博物館", schedules.getリーグマッチ(日時).getステージB()),
+                () -> assertEquals("ガチアサリ", schedules.getLeagueBattleAt(日時).getRule()),
+                () -> assertEquals("マンタマリア号", schedules.getLeagueBattleAt(日時).getStageA()),
+                () -> assertEquals("デボン海洋博物館", schedules.getLeagueBattleAt(日時).getStageB()),
 
-                () -> assertEquals("ナワバリバトル", schedules.getレギュラーマッチ(日時).getルール名()),
-                () -> assertEquals("Ｂバスパーク", schedules.getレギュラーマッチ(日時).getステージA()),
-                () -> assertEquals("モズク農園", schedules.getレギュラーマッチ(日時).getステージB())
+                () -> assertEquals("ナワバリバトル", schedules.getRegularBattleAt(日時).getRule()),
+                () -> assertEquals("Ｂバスパーク", schedules.getRegularBattleAt(日時).getStageA()),
+                () -> assertEquals("モズク農園", schedules.getRegularBattleAt(日時).getStageB())
         );
     }
 }
