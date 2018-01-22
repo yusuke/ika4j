@@ -9,6 +9,9 @@
  */
 package ika4j;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 @SuppressWarnings("WeakerAccess")
 public class Ika4J {
     private final IKAAccessor ikaAccessor;
@@ -17,8 +20,17 @@ public class Ika4J {
         ikaAccessor = new IKAAccessor(iksmSession);
     }
 
+    private LocalDateTime lastCachedDateTime = LocalDateTime.of(2017,7,21,0,0);
+    private Schedules cachedSchedules = null;
+    String cachedSchedulesJSON = null;
     public Schedules getSchedules() {
-        String scheduleJSON = ikaAccessor.getScheduleJSON();
-        return new Schedules(scheduleJSON);
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
+        // call the api only when
+        if (cachedSchedules == null || now.isAfter(lastCachedDateTime)) {
+            lastCachedDateTime = now;
+            cachedSchedulesJSON = ikaAccessor.getScheduleJSON();
+            cachedSchedules =  new Schedules(cachedSchedulesJSON);
+        }
+        return cachedSchedules;
     }
 }

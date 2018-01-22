@@ -26,7 +26,7 @@ class SchedulesTest {
             schedulesJSON = s.collect(Collectors.joining());
         }
 
-        Schedules schedules = Schedules.fromRawJSON(schedulesJSON);
+        Schedules schedules = new Schedules(schedulesJSON);
         LocalDateTime dateTime = LocalDateTime.of(2018, 1, 20, 10, 30);
         Battle rankedBattle = schedules.getRankedBattleAt(dateTime);
         Battle leagueBattle = schedules.getLeagueBattleAt(dateTime);
