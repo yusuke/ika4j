@@ -9,4 +9,4 @@
  */
 package ika4j
 
-data class Rule(val key: String, val multilineName: String, val name: String)
+data class Rule internal constructor(val key: String, val multilineName: String, val name: String)

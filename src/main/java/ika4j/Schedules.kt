@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 import java.util.ArrayList
 import java.util.NoSuchElementException
 
-class Schedules private constructor(
+class Schedules internal constructor(
         val rankedBattles: ArrayList<Battle>,
         val leagueBattles: ArrayList<Battle>,
         val regularBattles: ArrayList<Battle>) {

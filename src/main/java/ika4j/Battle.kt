@@ -13,14 +13,14 @@ import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-data class Battle(val id: Long,
+data class Battle internal constructor(val id: Long,
                   val gameMode: GameMode,
                   val rule: Rule,
                   val stageA: Stage,
                   val stageB: Stage,
                   val startTime: LocalDateTime,
                   val endTime: LocalDateTime) {
-    constructor(battle: JSONObject) : this(
+    internal constructor(battle: JSONObject) : this(
             id = battle.getLong("id"),
             gameMode = GameMode(battle.getJSONObject("game_mode")),
             rule = Rule(battle.getJSONObject("rule").getString("key"), battle.getJSONObject("rule").getString("multiline_name"), battle.getJSONObject("rule").getString("name")),
