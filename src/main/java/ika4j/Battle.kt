@@ -11,11 +11,11 @@ package ika4j
 
 import java.time.LocalDateTime
 
-data class Match(val rule: Rule,
-                 val stageA: String,
-                 val stageB: String,
-                 val startTime: LocalDateTime,
-                 val endTime: LocalDateTime) {
+data class Battle(val rule: Rule,
+                  val stageA: String,
+                  val stageB: String,
+                  val startTime: LocalDateTime,
+                  val endTime: LocalDateTime) {
     internal fun isLiveAt(dateTime: LocalDateTime): Boolean {
         return dateTime.isAfter(startTime) && dateTime.isBefore(endTime)
     }

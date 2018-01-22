@@ -19,26 +19,26 @@ import java.util.ArrayList
 import java.util.NoSuchElementException
 
 class Schedules private constructor(
-        val rankedBattles: ArrayList<Match> = ArrayList(),
-        val leagueBattles: ArrayList<Match> = ArrayList(),
-        val regularBattles: ArrayList<Match> = ArrayList()) {
+        val rankedBattles: ArrayList<Battle> = ArrayList(),
+        val leagueBattles: ArrayList<Battle> = ArrayList(),
+        val regularBattles: ArrayList<Battle> = ArrayList()) {
 
-    val currentRankedBattle: Match
+    val currentRankedBattle: Battle
         get() = pick(rankedBattles, LocalDateTime.now())
 
-    val currentLeagueBattle: Match
+    val currentLeagueBattle: Battle
         get() = pick(leagueBattles, LocalDateTime.now())
 
-    val currentRegularBattle: Match
+    val currentRegularBattle: Battle
         get() = pick(regularBattles, LocalDateTime.now())
 
-    val nextRankedBattle: Match
+    val nextRankedBattle: Battle
         get() = pick(rankedBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS))
 
-    val nextLeagueBattle: Match
+    val nextLeagueBattle: Battle
         get() = pick(leagueBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS))
 
-    val nextRegularBattle: Match
+    val nextRegularBattle: Battle
         get() = pick(regularBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS))
 
     private fun init(rawJson: String) {
@@ -46,52 +46,52 @@ class Schedules private constructor(
             val json = JSONObject(rawJson)
             val gachiArray = json.getJSONArray("gachi")
             for (i in 0 until gachiArray.length()) {
-                rankedBattles.add(createMatch(gachiArray.getJSONObject(i)))
+                rankedBattles.add(createBattle(gachiArray.getJSONObject(i)))
             }
 
             val leagueArray = json.getJSONArray("league")
             for (i in 0 until leagueArray.length()) {
-                leagueBattles.add(createMatch(leagueArray.getJSONObject(i)))
+                leagueBattles.add(createBattle(leagueArray.getJSONObject(i)))
             }
 
             val regularArray = json.getJSONArray("regular")
             for (i in 0 until regularArray.length()) {
-                regularBattles.add(createMatch(regularArray.getJSONObject(i)))
+                regularBattles.add(createBattle(regularArray.getJSONObject(i)))
             }
         } catch (e: JSONException) {
             throw IllegalStateException(e)
         }
     }
 
-    private fun createMatch(match: JSONObject): Match {
-        val rule = match.getJSONObject("rule")
-        return Match(
+    private fun createBattle(battle: JSONObject): Battle {
+        val rule = battle.getJSONObject("rule")
+        return Battle(
                 rule = Rule(rule.getString("key"), rule.getString("multiline_name"), rule.getString("name")),
-                startTime = LocalDateTime.ofEpochSecond(match.getLong("start_time"), 0, ZoneOffset.of("+9")),
-                endTime = LocalDateTime.ofEpochSecond(match.getLong("end_time"), 0, ZoneOffset.of("+9")),
-                stageA = match.getJSONObject("stage_a").getString("name"),
-                stageB = match.getJSONObject("stage_b").getString("name"))
+                startTime = LocalDateTime.ofEpochSecond(battle.getLong("start_time"), 0, ZoneOffset.of("+9")),
+                endTime = LocalDateTime.ofEpochSecond(battle.getLong("end_time"), 0, ZoneOffset.of("+9")),
+                stageA = battle.getJSONObject("stage_a").getString("name"),
+                stageB = battle.getJSONObject("stage_b").getString("name"))
     }
 
 
-    private fun pick(maches: List<Match>, dateTime: LocalDateTime): Match {
-        for (match in maches) {
-            if (match.isLiveAt(dateTime)) {
-                return match
+    private fun pick(battles: List<Battle>, dateTime: LocalDateTime): Battle {
+        for (battle in battles) {
+            if (battle.isLiveAt(dateTime)) {
+                return battle
             }
         }
-        throw NoSuchElementException("No match found at $dateTime")
+        throw NoSuchElementException("No battle found at $dateTime")
     }
 
-    fun getRankedBattleAt(dateTime: LocalDateTime): Match {
+    fun getRankedBattleAt(dateTime: LocalDateTime): Battle {
         return pick(rankedBattles, dateTime)
     }
 
-    fun getLeagueBattleAt(dateTime: LocalDateTime): Match {
+    fun getLeagueBattleAt(dateTime: LocalDateTime): Battle {
         return pick(leagueBattles, dateTime)
     }
 
-    fun getRegularBattleAt(dateTime: LocalDateTime): Match {
+    fun getRegularBattleAt(dateTime: LocalDateTime): Battle {
         return pick(regularBattles, dateTime)
     }
 
