@@ -27,19 +27,34 @@ class SchedulesTest {
         }
 
         Schedules schedules = Schedules.fromRawJSON(schedulesJSON);
-        LocalDateTime 日時 = LocalDateTime.of(2018, 1, 20, 10, 30);
+        LocalDateTime dateTime = LocalDateTime.of(2018, 1, 20, 10, 30);
+        Battle rankedBattle = schedules.getRankedBattleAt(dateTime);
+        Battle leagueBattle = schedules.getLeagueBattleAt(dateTime);
+        Battle regularBattle = schedules.getRegularBattleAt(dateTime);
         assertAll(
-                () -> assertEquals("ガチエリア", schedules.getRankedBattleAt(日時).getRule().getName()),
-                () -> assertEquals("ガンガゼ野外音楽堂", schedules.getRankedBattleAt(日時).getStageA()),
-                () -> assertEquals("エンガワ河川敷", schedules.getRankedBattleAt(日時).getStageB()),
+                () -> assertEquals("ガチエリア", rankedBattle.getRule().getName()),
+                () -> assertEquals("gachi", rankedBattle.getGameMode().getKey()),
+                () -> assertEquals("ガチマッチ", rankedBattle.getGameMode().getName()),
+                () -> assertEquals("ガンガゼ野外音楽堂", rankedBattle.getStageA().getName()),
+                () -> assertEquals(2, rankedBattle.getStageA().getId()),
+                () -> assertEquals("エンガワ河川敷", rankedBattle.getStageB().getName()),
+                () -> assertEquals(9, rankedBattle.getStageB().getId()),
 
-                () -> assertEquals("ガチアサリ", schedules.getLeagueBattleAt(日時).getRule().getName()),
-                () -> assertEquals("マンタマリア号", schedules.getLeagueBattleAt(日時).getStageA()),
-                () -> assertEquals("デボン海洋博物館", schedules.getLeagueBattleAt(日時).getStageB()),
+                () -> assertEquals("ガチアサリ", leagueBattle.getRule().getName()),
+                () -> assertEquals("league", leagueBattle.getGameMode().getKey()),
+                () -> assertEquals("リーグマッチ", leagueBattle.getGameMode().getName()),
+                () -> assertEquals("マンタマリア号", leagueBattle.getStageA().getName()),
+                () -> assertEquals(6, leagueBattle.getStageA().getId()),
+                () -> assertEquals("デボン海洋博物館", leagueBattle.getStageB().getName()),
+                () -> assertEquals(12, leagueBattle.getStageB().getId()),
 
-                () -> assertEquals("ナワバリバトル", schedules.getRegularBattleAt(日時).getRule().getName()),
-                () -> assertEquals("Ｂバスパーク", schedules.getRegularBattleAt(日時).getStageA()),
-                () -> assertEquals("モズク農園", schedules.getRegularBattleAt(日時).getStageB())
+                () -> assertEquals("ナワバリバトル", regularBattle.getRule().getName()),
+                () -> assertEquals("regular", regularBattle.getGameMode().getKey()),
+                () -> assertEquals("レギュラーマッチ", regularBattle.getGameMode().getName()),
+                () -> assertEquals("Ｂバスパーク", regularBattle.getStageA().getName()),
+                () -> assertEquals(11, regularBattle.getStageA().getId()),
+                () -> assertEquals("モズク農園", regularBattle.getStageB().getName()),
+                () -> assertEquals(10, regularBattle.getStageB().getId())
         );
     }
 }
