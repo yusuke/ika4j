@@ -41,6 +41,7 @@ class IKAAccessor {
     }
 
     private final HttpRequest request = HttpRequest.newBuilder(URI.create("https://app.splatoon2.nintendo.net/api/schedules"))
+            .headers("User-Agent", "Ika4J 1.0-SNAPSHOT")
             .GET()
             .build();
 
