@@ -19,6 +19,6 @@ public class Ika4J {
 
     public Schedules getSchedules() {
         String scheduleJSON = ikaAccessor.getScheduleJSON();
-        return Schedules.fromRawJSON(scheduleJSON);
+        return new Schedules(scheduleJSON);
     }
 }

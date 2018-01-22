@@ -18,9 +18,9 @@ import java.util.ArrayList
 import java.util.NoSuchElementException
 
 class Schedules private constructor(
-        val rankedBattles: ArrayList<Battle> = ArrayList(),
-        val leagueBattles: ArrayList<Battle> = ArrayList(),
-        val regularBattles: ArrayList<Battle> = ArrayList()) {
+        val rankedBattles: ArrayList<Battle>,
+        val leagueBattles: ArrayList<Battle>,
+        val regularBattles: ArrayList<Battle>) {
 
     val currentRankedBattle: Battle
         get() = pick(rankedBattles, LocalDateTime.now())
@@ -40,7 +40,7 @@ class Schedules private constructor(
     val nextRegularBattle: Battle
         get() = pick(regularBattles, LocalDateTime.now().plus(2, ChronoUnit.HOURS))
 
-    private fun init(rawJson: String) {
+    internal constructor(rawJson: String) :this( ArrayList(),ArrayList(),ArrayList() ){
         try {
             val json = JSONObject(rawJson)
             val gachiArray = json.getJSONArray("gachi")
@@ -82,14 +82,4 @@ class Schedules private constructor(
     fun getRegularBattleAt(dateTime: LocalDateTime): Battle {
         return pick(regularBattles, dateTime)
     }
-
-    companion object {
-        @JvmStatic
-        fun fromRawJSON(rawJSON: String): Schedules {
-            val schedules = Schedules()
-            schedules.init(rawJSON)
-            return schedules
-        }
-    }
-
 }
