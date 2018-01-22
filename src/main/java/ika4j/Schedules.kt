@@ -79,7 +79,7 @@ class Schedules private constructor(
                 return match
             }
         }
-        throw NoSuchElementException("No match found at " + dateTime)
+        throw NoSuchElementException("No match found at $dateTime")
     }
 
     fun getRankedBattleAt(dateTime: LocalDateTime): Match {
