@@ -29,15 +29,15 @@ class SchedulesTest {
         Schedules schedules = Schedules.fromRawJSON(schedulesJSON);
         LocalDateTime 日時 = LocalDateTime.of(2018, 1, 20, 10, 30);
         assertAll(
-                () -> assertEquals("ガチエリア", schedules.getRankedBattleAt(日時).getRule()),
+                () -> assertEquals("ガチエリア", schedules.getRankedBattleAt(日時).getRule().getName()),
                 () -> assertEquals("ガンガゼ野外音楽堂", schedules.getRankedBattleAt(日時).getStageA()),
                 () -> assertEquals("エンガワ河川敷", schedules.getRankedBattleAt(日時).getStageB()),
 
-                () -> assertEquals("ガチアサリ", schedules.getLeagueBattleAt(日時).getRule()),
+                () -> assertEquals("ガチアサリ", schedules.getLeagueBattleAt(日時).getRule().getName()),
                 () -> assertEquals("マンタマリア号", schedules.getLeagueBattleAt(日時).getStageA()),
                 () -> assertEquals("デボン海洋博物館", schedules.getLeagueBattleAt(日時).getStageB()),
 
-                () -> assertEquals("ナワバリバトル", schedules.getRegularBattleAt(日時).getRule()),
+                () -> assertEquals("ナワバリバトル", schedules.getRegularBattleAt(日時).getRule().getName()),
                 () -> assertEquals("Ｂバスパーク", schedules.getRegularBattleAt(日時).getStageA()),
                 () -> assertEquals("モズク農園", schedules.getRegularBattleAt(日時).getStageB())
         );

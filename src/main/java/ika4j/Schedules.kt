@@ -63,13 +63,14 @@ class Schedules private constructor(
         }
     }
 
-    private fun createMatch(gachi: JSONObject): Match {
+    private fun createMatch(match: JSONObject): Match {
+        val rule = match.getJSONObject("rule")
         return Match(
-                rule = gachi.getJSONObject("rule").getString("name"),
-                startTime = LocalDateTime.ofEpochSecond(gachi.getLong("start_time"), 0, ZoneOffset.of("+9")),
-                endTime = LocalDateTime.ofEpochSecond(gachi.getLong("end_time"), 0, ZoneOffset.of("+9")),
-                stageA = gachi.getJSONObject("stage_a").getString("name"),
-                stageB = gachi.getJSONObject("stage_b").getString("name"))
+                rule = Rule(rule.getString("key"), rule.getString("multiline_name"), rule.getString("name")),
+                startTime = LocalDateTime.ofEpochSecond(match.getLong("start_time"), 0, ZoneOffset.of("+9")),
+                endTime = LocalDateTime.ofEpochSecond(match.getLong("end_time"), 0, ZoneOffset.of("+9")),
+                stageA = match.getJSONObject("stage_a").getString("name"),
+                stageB = match.getJSONObject("stage_b").getString("name"))
     }
 
 
