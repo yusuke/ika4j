@@ -13,12 +13,14 @@ import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-data class Battle(val rule: Rule,
+data class Battle(val id:Long,
+                  val rule: Rule,
                   val stageA: Stage,
                   val stageB: Stage,
                   val startTime: LocalDateTime,
                   val endTime: LocalDateTime) {
     constructor(battle: JSONObject) : this(
+            id = battle.getLong("id"),
             rule = Rule(battle.getJSONObject("rule").getString("key"), battle.getJSONObject("rule").getString("multiline_name"), battle.getJSONObject("rule").getString("name")),
             startTime = LocalDateTime.ofEpochSecond(battle.getLong("start_time"), 0, ZoneOffset.of("+9")),
             endTime = LocalDateTime.ofEpochSecond(battle.getLong("end_time"), 0, ZoneOffset.of("+9")),
